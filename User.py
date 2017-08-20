@@ -21,12 +21,19 @@ class User:
         self.pincode = pincode
 
     def save(self):
-        query = "INSERT INTO users (first_name, last_name, password, address, city, state, pincode) VALUES('%s', '%s', '%s', '%s', '%s', '%s', '%s')"%(self.first_name, self.last_name, self.password, self.address, self.city, self.state, self.pincode)
+        query = "INSERT INTO users (first_name, last_name, password, address, city, state, pincode) VALUES(%s, %s, %s, %s, %s, %s, %s)"
         cur = db.getCursor()
-        if cur.execute(query):
+        if cur.execute(query, (self.first_name, self.last_name, self.password, self.address, self.city, self.state, self.pincode)):
             db.commit()
             return 1
         else:
             return 0
+    
+    @staticmethod
+    def authenticate(id, password):
+        query = "SELECT * FROM users WHERE id = %s AND password = %s"
+        cur = db.getCursor()
+        cur.execute(query, (id, password))
+        return cur.fetchone() != None
 
 
