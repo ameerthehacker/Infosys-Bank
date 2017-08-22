@@ -68,6 +68,13 @@ class Account(object):
         cur = db.getCursor()
         cur.execute(query, [[date]])
         db.commit()
+
+    @staticmethod
+    def getClosedAccounts():
+        query = "SELECT * FROM accounts"
+        cur = db.getCursor()
+        cur.execute(query)
+        return cur.fetchall()
         
 
         

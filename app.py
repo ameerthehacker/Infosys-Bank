@@ -3,6 +3,7 @@ from Database import Database as db
 from Account import Account
 from SAccount import SAccount
 from CAccount import CAccount
+from Admin import Admin
 
 def getAccountObj(id):
     if Account.accountExist(id):
@@ -116,6 +117,34 @@ def userMenu(current_user):
         else:
             print 'Invalid option!'
 
+def adminMenu():
+    choice = -1
+
+    while choice != '3':
+        print('\n')
+        print('1.Print closed account history')
+        print('2.Customers without CA')        
+        print('3.Admin Logout')
+
+        choice = raw_input('Enter your choice: ')
+        if choice == '1':
+            accounts = Account.getClosedAccounts()
+            for account in accounts:
+                print("Account|Account Type|Closed Date")
+                print(str(account[0]) + "|" + str(account[2]) + "|" + str(account[6]))
+        elif choice == '2':
+            query = "SELECT * FROM users WHERE id NOT IN ( SELECT user_id FROM accounts WHERE type = 'CA' )"
+            cur = db.getCursor()
+            cur.execute(query)
+            users = cur.fetchall()
+            print("Id|First Name|Last Name")
+            for user in users:
+                print(str(user[0]) + "|" + str(user[1]) + "|" + str(user[2]))
+        elif choice == '3':
+            pass
+        else:
+            print('Invalid option!')
+
 def mainMenu():
     choice  = -1    
     current_user = -1
@@ -159,7 +188,20 @@ def mainMenu():
             else:
                 print('Max sign in attempts reached')
         elif choice == '3':
-            pass
+            attempts = 1
+            while attempts <=3:
+                print("Attempt %d: "%(attempts))
+                username = raw_input('Username: ')
+                password = raw_input('Password: ')
+                if Admin.authenticate(username, password):
+                    # show admin related menu
+                    adminMenu()                    
+                    break            
+                else:
+                    print('Invalid credentials!')
+                attempts += 1
+            else:
+                print('Max sign in attempts reached')
         elif choice == '4':
             pass
         else:
