@@ -5,9 +5,9 @@ class Database:
     db = None
 
     @staticmethod
-    def getCursor(server = 'localhost', user ='root', password ='pwd', database = 'bank'):
+    def getCursor(server = 'localhost', user ='root', password ='pwd', database = 'bank_database'):
         if Database.db is None:
-            Database.db = mysql.connect('localhost', 'root', 'pwd', 'bank_database')            
+            Database.db = mysql.connect(server, user, password, database)            
         return Database.db.cursor()
 
     @staticmethod
